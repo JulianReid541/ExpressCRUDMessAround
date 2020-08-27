@@ -36,6 +36,36 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
     console.log('Connected to Database');
     const db = client.db('expressCRUD');
     const dbCollection = db.collection('users');
+
+     // get all users
+    app.get('/users', (req, res) => {
+        db.collection('users').find().toArray()
+        .then(results =>{
+            console.log(results);
+
+            res.status(200).send({
+                success: 'true',
+                message: 'Data fetch success',
+                users: results
+            })
+        })
+        .catch(error => console.error(error));
+        
+    });
+    app.post('/usersadd', (req, res) => {
+     // add data to Mongo DB collection
+     dbCollection.insertOne(req.body)
+     .then(result => {
+         console.log(result);
+
+         res.status(201).send({
+            success: 'true',
+            message: `Data added success ${req.body.name} added`
+           })
+     })
+     .catch(error => console.error(error))
+    
+    });
 })
 .catch(console.error);
 
